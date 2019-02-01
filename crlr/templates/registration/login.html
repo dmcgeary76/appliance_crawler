@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Appliance Price Catalog{% endblock %}
+{% block content %}
+<div id="container">
+  <div id="core_login">
+    <img class="logo" src="{% static 'logo.jpg' %}" />
+    <form method="post">{% csrf_token %}
+      <div id="username_container">{{ form.username.label_tag }}<br /><span class="input_box">{{ form.username }}</span></div>
+      <div id="password_container">{{ form.password.label_tag }}<br /> <span class="input_box">{{ form.password }}</span></div>
+      <div style="clear:both;">&nbsp;</div>
+      <input type="submit" value="login"></input>
+      {{ form.non_field_errors }}
+    </form>
+  </div>
+</div>
+{% endblock %}
