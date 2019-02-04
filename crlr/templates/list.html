@@ -2,6 +2,7 @@
     {{ filter_form.as_p }}
     <button id="filter_form_submit" type="submit" >Submit</button>
 </form>
+<p><a href="{% url 'csv_view' %}">Download CSV</a></p>
 {% for appliance in appliances %}
 <div style="float:left; width:290px; text-align:center;"><img src="{{ appliance.img_url }}" height="250px" /></div>
 <div style="float:left;">
