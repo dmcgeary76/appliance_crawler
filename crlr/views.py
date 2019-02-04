@@ -41,7 +41,7 @@ def csv_view(request):
     appliances = Appliance_Model.objects.all()
     buffer = io.StringIO()
     wr = csv.writer(buffer, quoting=csv.QUOTE_ALL)
-    row = 'Manufacturer, Short Description, Color, Model Number, SKU, Full Price, Sale Price, Open Box Price, Image URL'
+    row = ['Manufacturer', 'Short Description', 'Color', 'Model Number', 'SKU', 'Full Price', 'Sale Price', 'Open Box Price', 'Image URL']
     wr.writerow(row)
     for appliance in appliances:
         row = []
