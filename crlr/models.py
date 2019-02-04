@@ -25,3 +25,8 @@ class OpenBox_Model(models.Model):
     condition           = models.CharField(max_length=30)
     open_price          = models.DecimalField(max_digits=7, decimal_places=2)
     availability        = models.CharField(max_length=30)
+
+
+class Appliance_Filter_Model(models.Model):
+    manufacturer_sort   = models.CharField(max_length=300, null=True, blank=True)
+    price_sort          = models.CharField(max_length=300, null=True, blank=True)
