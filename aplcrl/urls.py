@@ -19,5 +19,6 @@ from crlr import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('list/', views.list_view, name='list_view')
+    path('list/', views.list_view, name='list_view'),
+    path('csv/', views.csv_view, name='csv_view')
 ]
