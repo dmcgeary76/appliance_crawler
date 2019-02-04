@@ -1,0 +1,205 @@
+html, body {
+  width: 100%;
+  height: 100%;
+  font-family: "Helvetica Neue", Helvetica, sans-serif;
+  color: #444;
+  -webkit-font-smoothing: antialiased;    background: #ffffff;
+}
+
+.center {
+  margin: auto;
+  width: 900px;
+}
+
+#container {
+  position: fixed;
+  width: 340px;
+  height: 380px;
+  top: 50%;
+  left: 50%;
+  margin-top: -140px;
+  margin-left: -170px;
+  background: #fff;
+  border-radius: 3px;
+  border: 1px solid #ccc;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, .1);
+}
+
+#core_login {
+  padding: 20px;
+}
+
+#icons {
+  float: right;
+  height: 15px;
+  margin-right: 5px;
+}
+
+#id_password {
+  width: 100%;
+  font-size: 18px;
+  border: 1px solid #c7d0d2;
+  border-radius: 2px;
+}
+
+#id_username {
+  width: 100%;
+  font-size: 18px;
+  border: 1px solid #c7d0d2;
+  border-radius: 2px;
+}
+
+input[type=submit] {
+  float: right;
+  margin-right: 20px;
+  margin-top: 20px;
+  width: 80px;
+  height: 30px;
+  font-size: 14px;
+  font-weight: bold;
+  color: #fff;
+  background-color: #acd6ef; /*IE fallback*/
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#acd6ef), to(#6ec2e8));
+  background-image: -moz-linear-gradient(top left 90deg, #acd6ef 0%, #6ec2e8 100%);
+  background-image: linear-gradient(top left 90deg, #acd6ef 0%, #6ec2e8 100%);
+  border-radius: 30px;
+  border: 1px solid #66add6;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, .3), inset 0 1px 0 rgba(255, 255, 255, .5);
+  cursor: pointer;
+}
+
+#label_forms {
+  font-size: 20px;
+}
+
+.logo {
+  width: 57%;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+#password_container {
+  font-size: 18px;
+  clear: both;
+  font-weight: bold;
+  color: #464749;
+}
+
+.pgttl {
+  text-align: center;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+#po_container {
+  width: 920px;
+  top: 50%;
+  left: 50%;
+  padding-top: 20px;
+  margin-left: auto;
+  margin-right: auto;
+  background: fff;
+  border-radius: 3px;
+  border: 1px solid #ccc;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, .1);
+}
+
+.po_item {
+  text-align:center;
+  padding-bottom:5px;
+  padding-top:5px;
+}
+
+.pub_err {
+  color: red;
+}
+
+td {
+  padding-bottom: 20px;
+  padding-right: 10px;
+  vertical-align: top;
+}
+
+th {
+  padding-bottom: 20px;
+  padding-right: 10px;
+  vertical-align: center;
+  text-align: center;
+  background: lightblue;
+  border: 1px solid white;
+}
+
+/* Tooltip container */
+.tooltip {
+  position: relative;
+  display: inline-block;
+  border-bottom: 1px dotted black; /* If you want dots under the hoverable text */
+}
+
+/* Tooltip text */
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 120px;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  padding: 5px 0;
+  border-radius: 6px;
+
+  /* Position the tooltip text - see examples below! */
+  position: absolute;
+  z-index: 1;
+}
+
+.tooltip .tooltiptext {
+  top: -5px;
+  left: 105%;
+}
+
+/* Show the tooltip text when you mouse over the tooltip container */
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+}
+
+/* Add a black background color to the top navigation */
+.topnav {
+  background-color: #333;
+  overflow: hidden;
+  padding-right: 20px;
+}
+
+/* Style the links inside the navigation bar */
+.topnav a {
+  float: left;
+  color: #f2f2f2;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  font-size: 17px;
+}
+
+/* Change the color of links on hover */
+.topnav a:hover {
+  background-color: #ddd;
+  color: black;
+}
+
+/* Add a color to the active/current link */
+.topnav a.active {
+  background-color: #ffffff;
+  color: black;
+}
+
+.topnav a.lo_btn {
+  float: right;
+  text-decoration: none;
+}
+
+#username_container {
+  padding-top: 15px;
+  padding-bottom: 15px;
+  font-size: 18px;
+  font-weight: bold;
+  color: #464749;
+}
