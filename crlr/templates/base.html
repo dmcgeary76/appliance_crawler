@@ -1,8 +1,9 @@
-
+{% load static %}
 <!doc-type html>
 <html>
   <head>
     <title>{% block title %}ARC Appliance Reference{% endblock %}</title>
+    <link rel="stylesheet" type="text/css" href="{% static '/css/styles.css' %}">
   </head>
   <body>
     {% block content %}
