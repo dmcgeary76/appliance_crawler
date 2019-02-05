@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="menu_container">
+  <div class="menu_tile">
+    <a href="{% url 'list_view' 1 %}"><img src="https://pisces.bbystatic.com/image2/BestBuy_US/Gallery/pol-evn74881-1831-19168.jpg" width="250px" /></a>
+  </div>
+  <div class="menu_tile">
+    <a href="{% url 'list_view' 2 %}"><img src="https://pisces.bbystatic.com/image2/BestBuy_US/Gallery/pol_evn128517_181223-59474.jpg" width="250px" /></a>
+  </div>
+</div>
+{% endblock %}
