@@ -1,0 +1,13 @@
+.menu_container {
+  width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.menu_tile {
+  width: 280px;
+  height 280px;
+  float: left;
+  text-align: center;
+  padding: 10px;
+}
