@@ -8,8 +8,9 @@ import io
 
 
 # Create your views here.
-def list_view(request):
-    appliances = Appliance_Model.objects.all()
+def list_view(request, basic_model_id = 1):
+    appliances = Appliance_Model.objects.all().filter(basic_model_id = basic_model_id)
+    manufacturer_tag = 'All'
     filter_form = Appliance_Filter_Form(request.GET or None)
     if request.method == 'GET': # If the form is submitted
         manufacturer_sort_term = request.GET.get('manufacturer_sort', None)
@@ -18,10 +19,12 @@ def list_view(request):
         if manufacturer_sort_term and price_sort_term:
             appliances = Appliance_Model.objects.all().filter(manufacturer = manufacturer_sort_term).order_by(price_sort_term)
             request.session['manufacturer_sort'] = manufacturer_sort_term
+            manufacturer_tag = manufacturer_sort_term
             request.session['price_sort'] = price_sort_term
         elif manufacturer_sort_term:
             appliances = Appliance_Model.objects.all().filter(manufacturer = manufacturer_sort_term)
             request.session['manufacturer_sort'] = manufacturer_sort_term
+            manufacturer_tag = manufacturer_sort_term
             request.session['price_sort'] = None
         elif price_sort_term:
             appliances = Appliance_Model.objects.all().order_by(price_sort_term)
@@ -32,7 +35,8 @@ def list_view(request):
             request.session['price_sort'] = None
     context = {
         'appliances': appliances,
-        'filter_form': filter_form
+        'filter_form': filter_form,
+        'manufacturer_tag': manufacturer_tag,
     }
     return render(request, 'list.html', context)
 
@@ -69,3 +73,7 @@ def search_view(request):
             'form': form
         }
     return render(request, 'list.html', context)
+
+
+def home_view(request):
+    return render(request, 'home.html', {})

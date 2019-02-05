@@ -1,23 +1,38 @@
-<form type="get" action="." style="margin: 0">
-    {{ filter_form.as_p }}
-    <button id="filter_form_submit" type="submit" >Submit</button>
-</form>
-<p><a href="{% url 'csv_view' %}">Download CSV</a></p>
-{% for appliance in appliances %}
-<div style="float:left; width:290px; text-align:center;"><img src="{{ appliance.img_url }}" height="250px" /></div>
-<div style="float:left;">
-  Manufacturer: {{ appliance.manufacturer }}<br />
-  Description:  {{ appliance.short_description }}<br />
-  Color: {{ appliance.color }}<br />
-  Model: {{ appliance.model_number }}<br />
-  SKU:  {{ appliance.sku }}<br />
-  Full Price: {{ appliance.full_price }}<br />
-  Sale Price: {{ appliance.sale_price }}<br />
-  {% if appliance.open_box_price == 0.00 %}
-    Open Box Price: None
-  {% else %}
-    Open Box Price: {{ appliance.open_box_price }}
-  {% endif %}
-</div>
-<div style="clear:both;">&nbsp;</div>
-{% endfor %}
+{% extends 'base.html' %}
+{% block title %}
+{{ basic_model.appliance_type }} - {{ manufacturer_tag }}
+{% endblock %}
+{% block content %}
+  <div style="width:100%; background:blue; color:white;">
+    <div style="width:150px; float:left; padding-left:10px; text-align:center;">
+      <a href="{% url 'list_view' 1 %}">Refrigerators</a>
+    </div>
+    <div style="width:150px; float:left; padding-left:10px; text-align:center;">
+      <a href="{% url 'list_view' 2 %}">Dishwashers</a>
+    </div>
+  </div>
+  <p>&nbsp;</p>
+  <form type="get" action="." style="margin: 0">
+      {{ filter_form.as_p }}
+      <button id="filter_form_submit" type="submit" >Submit</button>
+  </form>
+  <p><a href="{% url 'csv_view' %}">Download CSV</a></p>
+  {% for appliance in appliances %}
+    <div style="float:left; width:290px; text-align:center;"><img src="{{ appliance.img_url }}" height="250px" /></div>
+    <div style="float:left;">
+      Manufacturer: {{ appliance.manufacturer }}<br />
+      Description:  {{ appliance.short_description }}<br />
+      Color: {{ appliance.color }}<br />
+      Model: {{ appliance.model_number }}<br />
+      SKU:  {{ appliance.sku }}<br />
+      Full Price: {{ appliance.full_price }}<br />
+      Sale Price: {{ appliance.sale_price }}<br />
+      {% if appliance.open_box_price == 0.00 %}
+        Open Box Price: None
+      {% else %}
+        Open Box Price: {{ appliance.open_box_price }}
+      {% endif %}
+    </div>
+    <div style="clear:both;">&nbsp;</div>
+  {% endfor %}
+{% endblock %}
