@@ -71,8 +71,11 @@ def main(app_type, store_name):
     try:
         basic_model = get_object_or_404(Basic_Model, appliance_type=app_type, store_name=store_name)
     except:
-        starturl = 'https://www.bestbuy.com/site/refrigerators/all-refrigerators/pcmcat367400050001.c?cp=31&id=pcmcat367400050001'
-        basic_model = Basic_Model(appliance_type='Refrigerator', store_name='Best Buy', start_url=starturl)
+        if app_type == 'Refrigerator':
+            starturl = 'https://www.bestbuy.com/site/refrigerators/all-refrigerators/pcmcat367400050001.c?cp=31&id=pcmcat367400050001'
+        elif apptype == 'Dishwasher':
+            starturl = 'https://www.bestbuy.com/site/dishwashers/built-in-dishwashers/abcat0905001.c?id=abcat0905001'
+        basic_model = Basic_Model(appliance_type=appliance_type, store_name='Best Buy', start_url=starturl)
         basic_model.save()
     finally:
         done = False
