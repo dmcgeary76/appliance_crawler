@@ -6,6 +6,11 @@ import requests
 import re
 
 
+def add_model():
+    starturl = 'https://www.bestbuy.com/site/washers-dryers/washers-washing-machines/abcat0910001.c?id=abcat0910001'
+    basic_model = Basic_Model(appliance_type='Washing Machine', store_name='Best Buy', start_url=starturl)
+    basic_model.save()
+
 def update_appliance_list(soup, basic_model):
     # isolate the item records
     items = soup.find_all('div', {'class':'list-item'})
@@ -75,6 +80,8 @@ def main(app_type, store_name):
             starturl = 'https://www.bestbuy.com/site/refrigerators/all-refrigerators/pcmcat367400050001.c?cp=31&id=pcmcat367400050001'
         elif apptype == 'Dishwasher':
             starturl = 'https://www.bestbuy.com/site/dishwashers/built-in-dishwashers/abcat0905001.c?id=abcat0905001'
+        elif apptype == 'Washing Machine':
+            starturl = 'https://www.bestbuy.com/site/washers-dryers/washers-washing-machines/abcat0910001.c?id=abcat0910001'
         basic_model = Basic_Model(appliance_type=appliance_type, store_name='Best Buy', start_url=starturl)
         basic_model.save()
     finally:

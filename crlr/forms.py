@@ -8,9 +8,39 @@ price_list = [
     ('open_box_price', 'Open Box Price',)
 ]
 
-class Appliance_Filter_Form(forms.ModelForm):
+class Refrigerator_Filter_Form(forms.ModelForm):
     manufacturer_sort   = forms.ModelChoiceField(
-                                    queryset=Appliance_Model.objects.all().values_list('manufacturer', flat=True).distinct().order_by('manufacturer'),
+                                    queryset=Appliance_Model.objects.all().filter(basic_model_id = 1).values_list('manufacturer', flat=True).distinct().order_by('manufacturer'),
+                                    required=False)
+    price_sort          = forms.ChoiceField(
+                                    choices = price_list,
+                                    required=False)
+    class Meta:
+        model = Appliance_Filter_Model
+        fields = [
+            'manufacturer_sort',
+            'price_sort'
+        ]
+
+
+class Dishwasher_Filter_Form(forms.ModelForm):
+    manufacturer_sort   = forms.ModelChoiceField(
+                                    queryset=Appliance_Model.objects.all().filter(basic_model_id = 2).values_list('manufacturer', flat=True).distinct().order_by('manufacturer'),
+                                    required=False)
+    price_sort          = forms.ChoiceField(
+                                    choices = price_list,
+                                    required=False)
+    class Meta:
+        model = Appliance_Filter_Model
+        fields = [
+            'manufacturer_sort',
+            'price_sort'
+        ]
+
+
+class Washing_Machine_Filter_Form(forms.ModelForm):
+    manufacturer_sort   = forms.ModelChoiceField(
+                                    queryset=Appliance_Model.objects.all().filter(basic_model_id = 3).values_list('manufacturer', flat=True).distinct().order_by('manufacturer'),
                                     required=False)
     price_sort          = forms.ChoiceField(
                                     choices = price_list,
