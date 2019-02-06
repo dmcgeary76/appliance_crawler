@@ -2,32 +2,39 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from django.http import HttpResponse
 from .models import Appliance_Model, OpenBox_Model
-from .forms import Appliance_Filter_Form
+from .forms import Dishwasher_Filter_Form, Refrigerator_Filter_Form
 import csv
 import io
 
 
 # Create your views here.
-def list_view(request, basic_model_id = 1):
+def list_view(request, basic_model_id = 0):
     appliances = Appliance_Model.objects.all().filter(basic_model_id = basic_model_id)
+    if basic_model_id == 0:
+        basic_model_id = request.session['basic_model_id']
+    else:
+        request.session['basic_model_id'] = basic_model_id
     manufacturer_tag = 'All'
-    filter_form = Appliance_Filter_Form(request.GET or None)
+    if basic_model_id == 1:
+        filter_form = Refrigerator_Filter_Form(request.GET or None)
+    elif basic_model_id ==2:
+        filter_form = Dishwasher_Filter_Form(request.GET or None)
     if request.method == 'GET': # If the form is submitted
         manufacturer_sort_term = request.GET.get('manufacturer_sort', None)
         price_sort_term = request.GET.get('price_sort', None)
         # Reset the form
         if manufacturer_sort_term and price_sort_term:
-            appliances = Appliance_Model.objects.all().filter(manufacturer = manufacturer_sort_term).order_by(price_sort_term)
+            appliances = Appliance_Model.objects.all().filter(basic_model_id = basic_model_id, manufacturer = manufacturer_sort_term).order_by(price_sort_term)
             request.session['manufacturer_sort'] = manufacturer_sort_term
             manufacturer_tag = manufacturer_sort_term
             request.session['price_sort'] = price_sort_term
         elif manufacturer_sort_term:
-            appliances = Appliance_Model.objects.all().filter(manufacturer = manufacturer_sort_term)
+            appliances = Appliance_Model.objects.all().filter(basic_model_id = basic_model_id, manufacturer = manufacturer_sort_term)
             request.session['manufacturer_sort'] = manufacturer_sort_term
             manufacturer_tag = manufacturer_sort_term
             request.session['price_sort'] = None
         elif price_sort_term:
-            appliances = Appliance_Model.objects.all().order_by(price_sort_term)
+            appliances = Appliance_Model.objects.all().filter(basic_model_id = basic_model_id).order_by(price_sort_term)
             request.session['manufacturer_sort'] = None
             request.session['price_sort'] = price_sort_term
         else:
@@ -37,12 +44,20 @@ def list_view(request, basic_model_id = 1):
         'appliances': appliances,
         'filter_form': filter_form,
         'manufacturer_tag': manufacturer_tag,
+        'basic_model_id': basic_model_id,
     }
     return render(request, 'list.html', context)
 
 
 def csv_view(request):
-    appliances = Appliance_Model.objects.all()
+    if request.session['manufacturer_sort'] and request.session['price_sort']:
+        appliances = Appliance_Model.objects.all().filter(basic_model_id = request.session['basic_model_id'],manufacturer = request.session['manufacturer_sort']).order_by(request.session['price_sort'])
+    elif request.session['manufacturer_sort']:
+        appliances = Appliance_Model.objects.all().filter(basic_model_id = request.session['basic_model_id'],manufacturer = request.session['manufacturer_sort'])
+    elif request.session['price_sort']:
+        appliances = Appliance_Model.objects.all().filter(basic_model_id = request.session['basic_model_id']).order_by(request.session['price_sort'])
+    else:
+        appliances = Appliance_Model.objects.all().filter(basic_model_id = request.session['basic_model_id'])
     buffer = io.StringIO()
     wr = csv.writer(buffer, quoting=csv.QUOTE_ALL)
     row = ['Manufacturer', 'Short Description', 'Color', 'Model Number', 'SKU', 'Full Price', 'Sale Price', 'Open Box Price', 'Image URL']
