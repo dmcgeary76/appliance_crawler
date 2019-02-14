@@ -123,6 +123,7 @@ def main(app_type, store_name):
                 driver.get(start_url)
                 soup = bs(driver.page_source, 'html.parser')
                 update_appliance_list(soup, basic_model)
+                print('THIS IS PAGE ' + str(count)) 
                 count += 1
             except:
                 done = True
