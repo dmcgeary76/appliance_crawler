@@ -2,7 +2,8 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from django.http import HttpResponse
 from .models import Appliance_Model, OpenBox_Model
-from .forms import Dishwasher_Filter_Form, Refrigerator_Filter_Form, Washing_Machine_Filter_Form
+from .forms import Dishwasher_Filter_Form, Refrigerator_Filter_Form, Washing_Machine_Filter_Form, Dryer_Filter_Form, Microwave_Filter_Form
+from .forms import Air_Conditioner_Filter_Form, Dehumidifier_Filter_Form, Vacuum_Filter_Form
 import csv
 import io
 
@@ -21,6 +22,16 @@ def list_view(request, basic_model_id = 0):
         filter_form = Dishwasher_Filter_Form(request.GET or None)
     elif basic_model_id == 3:
         filter_form = Washing_Machine_Filter_Form(request.GET or None)
+    elif basic_model_id == 4:
+        filter_form = Dryer_Filter_Form(request.GET or None)
+    elif basic_model_id == 5:
+        filter_form = Microwave_Filter_Form(request.GET or None)
+    elif basic_model_id == 6:
+        filter_form = Air_Conditioner_Filter_Form(request.GET or None)
+    elif basic_model_id == 7:
+        filter_form = Dehumidifier_Filter_Form(request.GET or None)
+    elif basic_model_id == 8:
+        filter_form = Vacuum_Filter_Form(request.GET or None)
     if request.method == 'GET': # If the form is submitted
         manufacturer_sort_term = request.GET.get('manufacturer_sort', None)
         price_sort_term = request.GET.get('price_sort', None)

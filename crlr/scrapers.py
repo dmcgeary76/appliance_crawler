@@ -6,10 +6,27 @@ import requests
 import re
 
 
-def add_model():
-    starturl = 'https://www.bestbuy.com/site/washers-dryers/washers-washing-machines/abcat0910001.c?id=abcat0910001'
-    basic_model = Basic_Model(appliance_type='Washing Machine', store_name='Best Buy', start_url=starturl)
+def add_models():
+    starturl = 'https://www.bestbuy.com/site/washers-dryers/dryers/abcat0910004.c?id=abcat0910004'
+    basic_model = Basic_Model(appliance_type='Dryer', store_name='Best Buy', start_url=starturl)
     basic_model.save()
+
+    starturl = 'https://www.bestbuy.com/site/microwaves/all-microwaves/pcmcat748301803023.c?id=pcmcat748301803023'
+    basic_model = Basic_Model(appliance_type='Microwave', store_name='Best Buy', start_url=starturl)
+    basic_model.save()
+
+    starturl = 'https://www.bestbuy.com/site/heating-cooling-air-quality/air-conditioners/abcat0907001.c?id=abcat0907001'
+    basic_model = Basic_Model(appliance_type='Air Conditioner', store_name='Best Buy', start_url=starturl)
+    basic_model.save()
+
+    starturl = 'https://www.bestbuy.com/site/heating-cooling-air-quality/dehumidifiers/abcat0908002.c?id=abcat0908002'
+    basic_model = Basic_Model(appliance_type='Dehumidifier', store_name='Best Buy', start_url=starturl)
+    basic_model.save()
+
+    starturl = 'https://www.bestbuy.com/site/vacuums-floor-care/all-vacuums-and-floor-care/pcmcat338600050020.c?id=pcmcat338600050020'
+    basic_model = Basic_Model(appliance_type='Vacuum', store_name='Best Buy', start_url=starturl)
+    basic_model.save()
+
 
 def update_appliance_list(soup, basic_model):
     # isolate the item records
@@ -113,7 +130,10 @@ def main(app_type, store_name):
                 print('Done')
 
 
-'''
-https://www.bestbuy.com/site/refrigerators/all-refrigerators/pcmcat367400050001.c?id=pcmcat367400050001
-https://www.bestbuy.com/site/refrigerators/all-refrigerators/pcmcat367400050001.c?cp=31&id=pcmcat367400050001
-'''
+def update_all():
+    app_type = ['Refrigerator', 'Washing Machine', 'Dishwasher', 'Dryer', 'Microwave', 'Air Conditioner', 'Dehumidifier', 'Vacuum']
+    for appl in app_type:
+        try:
+            main(appl, 'Best Buy')
+        except:
+            pass
