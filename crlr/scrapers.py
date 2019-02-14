@@ -89,7 +89,7 @@ def update_appliance_list(soup, basic_model):
             pass
 
 
-def main(app_type, store_name):
+def main(app_type, store_name, count = 1):
     try:
         basic_model = get_object_or_404(Basic_Model, appliance_type=app_type, store_name=store_name)
     except:
@@ -103,7 +103,6 @@ def main(app_type, store_name):
         basic_model.save()
     finally:
         done = False
-        count = 1
         while not done:
             # Set options for the web-driver - including headless
             options = webdriver.ChromeOptions()
