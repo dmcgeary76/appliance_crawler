@@ -37,7 +37,7 @@
   </form>
   <p><a href="{% url 'csv_view' %}">Download CSV</a></p>
   {% for appliance in appliances %}
-    <div style="float:left; width:290px; text-align:center;"><img src="{{ appliance.img_url }}" height="250px" /></div>
+    <div style="float:left; width:290px; text-align:center;"><img src="{{ appliance.img_url }}" width="250px" /></div>
     <div style="float:left;">
       Manufacturer: {{ appliance.manufacturer }}<br />
       Description:  {{ appliance.short_description }}<br />
