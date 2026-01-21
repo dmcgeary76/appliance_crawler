@@ -2,6 +2,7 @@ from selenium import webdriver
 from bs4 import BeautifulSoup as bs, NavigableString, Comment
 from django.shortcuts import get_object_or_404
 from .models import Basic_Model, Appliance_Model
+from urllib.parse import urljoin
 import requests
 import re
 
@@ -28,64 +29,95 @@ def add_models():
     basic_model.save()
 
 
+def _extract_prices(item):
+    price_texts = [
+        el.get_text(" ", strip=True)
+        for el in item.select(
+            "[data-testid*='price'], "
+            ".priceView-hero-price, "
+            ".priceView-customer-price, "
+            ".pricing-price__regular-price, "
+            ".pricing-price__sale-price"
+        )
+    ]
+    if not price_texts:
+        price_texts = [item.get_text(" ", strip=True)]
+    price_numbers = re.findall(r"\d+\.\d{2}", " ".join(price_texts))
+    return sorted({float(value) for value in price_numbers})
+
+
+def _extract_image_url(item, sku):
+    for img in item.select("img"):
+        candidate = img.get("data-src") or img.get("src") or ""
+        if not candidate:
+            continue
+        if sku and sku in candidate:
+            return urljoin("https://", candidate)
+        if "pisces.bbystatic" in candidate:
+            return urljoin("https://", candidate)
+    match = re.search(r"pisces\.bbystatic\S+", str(item))
+    if match:
+        return "https://" + match.group()
+    return ""
+
+
 def update_appliance_list(soup, basic_model):
     # isolate the item records
-    items = soup.find_all('div', {'class':'list-item'})
+    items = soup.find_all('div', {'class': 'list-item'})
 
     # strip out the info from each item on the page and store it
     for item in items:
         try:
-            has_sale_price = False
-            if ('onSale' in str(item)):
-                has_sale_price = True
-            short_descs = item.find_all('div', {'class':'sku-title'})
-            model_sku = item.find_all('span', {'class': 'sku-value'})
-            img_pattern = re.compile(r'pisces.bbystatic\S+')
-            temp_imgurl = img_pattern.finditer(str(item))
-            for url in temp_imgurl:
-                if model_sku[1].text.strip() in url.group():
-                    imgurl = 'https://' + url.group()
-            pattern = re.compile(r'\d+\.\d\d')
-            prices = pattern.finditer(str(item))
-            price_list = []
-            for price in prices:
-                if float(price.group()) not in price_list:
-                    price_list.append(float(price.group()))
-                    price_list.sort()
-            # Set values for the entries
+            has_sale_price = bool(
+                item.select_one("[class*='onSale'], [data-testid*='sale']")
+            ) or "onSale" in str(item)
+            sku_title = item.select_one("div.sku-title") or item.select_one(
+                "[data-testid='product-title']"
+            )
+            title_text = sku_title.get_text(" ", strip=True) if sku_title else ""
+            title_parts = [part.strip() for part in title_text.split(" - ") if part.strip()]
+            manufacturer = title_parts[0] if len(title_parts) > 0 else ""
+            short_description = title_parts[1] if len(title_parts) > 1 else title_text
+            color = title_parts[2] if len(title_parts) > 2 else ""
+
+            sku_values = [span.get_text(strip=True) for span in item.select("span.sku-value")]
+            model_number = sku_values[0] if len(sku_values) > 0 else ""
+            sku = sku_values[1] if len(sku_values) > 1 else item.get("data-sku-id", "")
+            if not sku:
+                continue
+
+            price_list = _extract_prices(item)
+            if not price_list:
+                continue
             fprice = price_list[-1]
-            if has_sale_price:
-                sprice  = price_list[-2]
-                obprice = price_list[-3]
+            if has_sale_price and len(price_list) >= 2:
+                sprice = price_list[-2]
+                obprice = price_list[-3] if len(price_list) >= 3 else 0.00
             else:
-                try:
-                    sprice  = price_list[-1]
-                    obprice = price_list[-2]
-                except:
-                    sprice = price_list[-1]
-                    obprice = 0.00
-            try:
-                app_model = get_object_or_404(Appliance_Model, sku = str(model_sku[1].text.strip()))
-                print(app_model.sku + ' exists and will be deleted.')
-                app_model.delete()
-            except:
-                pass
-            finally:
-                app_model = Appliance_Model(
-                    basic_model         = basic_model,
-                    short_description   = short_descs[0].text.strip().split(' - ')[1],
-                    manufacturer        = short_descs[0].text.strip().split(' - ')[0],
-                    color               = short_descs[0].text.strip().split(' - ')[2],
-                    model_number        = model_sku[0].text.strip(),
-                    sku                 = str(model_sku[1].text.strip()),
-                    full_price          = fprice,
-                    sale_price          = sprice,
-                    open_box_price      = obprice,
-                    img_url             = imgurl.split(';')[0]
-                )
-                print('Record inserted for ' + app_model.manufacturer + ' ' + app_model.sku)
-                app_model.save()
-        except:
+                sprice = price_list[-1]
+                obprice = price_list[-2] if len(price_list) >= 2 else 0.00
+
+            imgurl = _extract_image_url(item, sku)
+
+            deleted, _ = Appliance_Model.objects.filter(sku=str(sku)).delete()
+            if deleted:
+                print(str(sku) + ' exists and will be deleted.')
+
+            app_model = Appliance_Model(
+                basic_model=basic_model,
+                short_description=short_description,
+                manufacturer=manufacturer,
+                color=color,
+                model_number=model_number,
+                sku=str(sku),
+                full_price=fprice,
+                sale_price=sprice,
+                open_box_price=obprice,
+                img_url=imgurl.split(";")[0]
+            )
+            print('Record inserted for ' + app_model.manufacturer + ' ' + app_model.sku)
+            app_model.save()
+        except Exception:
             pass
 
 
@@ -111,23 +143,28 @@ def main(app_type, store_name, count = 1):
             options.add_argument('window-size=1200x600') # set the window size
 
             # assign webdriver to a driver instance
-            driver = webdriver.Chrome(chrome_options=options)
+            driver = None
+            try:
+                driver = webdriver.Chrome(options=options)
 
             if count == 1:
                 start_url = basic_model.start_url
             else:
                 start_url = basic_model.start_url.split('?')[0] + '?cp=' + str(count) + '&' + basic_model.start_url.split('?')[1]
-            try:
-                # get the page again to see if the content has changed
-                driver.get(start_url)
-                soup = bs(driver.page_source, 'html.parser')
-                update_appliance_list(soup, basic_model)
-                print('THIS IS PAGE ' + str(count)) 
-                count += 1
-            except:
-                done = True
-                print(count)
-                print('Done')
+                try:
+                    # get the page again to see if the content has changed
+                    driver.get(start_url)
+                    soup = bs(driver.page_source, 'html.parser')
+                    update_appliance_list(soup, basic_model)
+                    print('THIS IS PAGE ' + str(count))
+                    count += 1
+                except:
+                    done = True
+                    print(count)
+                    print('Done')
+            finally:
+                if driver:
+                    driver.quit()
 
 
 def update_all():
